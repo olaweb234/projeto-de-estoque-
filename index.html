@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Document</title>
+</head>
+<body>
+    <div class="card">
+        <h2>➕ Cadastrar Produto</h2>
+        <form id="formulario">
+            <label>Nome</label>
+            <input type="text" id="nome" placeholder="nome do produto" >
+
+            <label>Categoria</label>
+            <input type="text" id="categoria" placeholder="ex:Eletrônicos">
+
+            <label>Preço</label>
+            <input type="number" id="preco" placeholder="0,00" min="0">
+
+            <label >Quantidade</label>
+            <input type="number" id="quantidade" placeholder="0" min="0">
+
+            <button type="submit" id="cadastrar">Cadastrar</button>
+        </form>
+    </div>
+
+    <div class="card">
+    <h2>🔍 Pesquisar</h2>
+    <div class="busca-area">
+        <input type="text" id="buscar" placeholder="Nome do produto...">
+        <button type="button" id="btn-buscar">Buscar</button>
+    </div>
+</div>
+<div class="card">
+    <h2>📊 Ordenar</h2>
+    <div class="filtros-grid">
+        <button type="button" id="ordenar-preco">💰 Preço</button>
+        <button type="button" id="ordenar-quantidade">📦 Quantidade</button>
+        <button type="button" id="ordenar-nome">🔤 Nome A-Z</button>
+    </div>
+</div>
+
+     
+    <div class="card">
+        <h2>📋 Produtos</h2>
+        <ul id="listahtml">
+          
+        </ul>
+    </div>
+
+
+
+    <div class="card">
+        <h2>📊 Painel de Estatísticas</h2>
+        <div id="Conteudoestatisticas">
+            <div class="stat-item">
+                <div class="label">Total</div>
+                <div class="value" id="total-geral">0</div>
+            </div>
+            <div class="stat-item">
+                <div class="label">Receitas</div>
+                <div class="value verde" id="total-receitas">R$ 0,00</div>
+            </div>
+            <div class="stat-item">
+                <div class="label">produto mais caro</div>
+                <div class="value verde" id="produto_maiscaro">Nenhum produto</div>
+            </div> 
+            <div class="stat-item">
+                <div class="label">Produto mais barato</div>
+                <div class="value verde" id="produto_maisbarato">Nenhum produto</div>
+            </div>
+             <div class="stat-item">
+                <div class="label">Produto com menor quantidade</div>
+                <div class="value vermelho" id="produto_menor">Nenhum produto</div>
+            </div>
+         </div>  
+        
+  <div class="card">
+        <h2>⚠️ Alertas</h2>
+        <p id="alertas">📌 Nenhum alerta no momento.</p>
+      
+    </div>
+
+</body>
+<script src="script.js"></script>
+</html>
