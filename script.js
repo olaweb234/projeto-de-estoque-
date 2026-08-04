@@ -1,6 +1,7 @@
 let listajs=[]
 let idjs=1
 let receita2=0
+let ideditado=null
 const envio_formulario=document.getElementById('formulario')
 const nome=document.getElementById('nome') 
 const categoria=document.getElementById('categoria')
@@ -15,7 +16,19 @@ const listahtml=document.getElementById('listahtml')
 const alertas=document.getElementById('alertas')
 
 
+function salvarnolocalstorage(){
+    localStorage.setItem('estoque',JSON.stringify(listajs))
+}
 
+const dadossalvos=localStorage.getItem('estoque')
+if(dadossalvos){
+    listajs=JSON.parse(dadossalvos)
+    if(listajs.length>0){
+        const ultmoid=listajs[listajs.length-1].id
+        idjs=ultmoid+1
+    }
+    renderizarlista()
+}
 
 function atualizarestatisticas(){
     receita2=0
@@ -50,12 +63,35 @@ function renderizarlista(){
    listajs.forEach(function(produto){
     const valorconvertido=produto.preco.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
     const li=document.createElement('li')
+    const btnexcluir=document.createElement('button')
+    const idparaexcluir=produto.id
+    btnexcluir.innerText='🗑️'
+    btnexcluir.addEventListener('click',function(){
+        if(confirm('tem certeza?')){
+            listajs=listajs.filter(produto=>produto.id !==idparaexcluir)
+            renderizarlista()
+            salvarnolocalstorage()
+        }
+    })
+    const bteditar=document.createElement('button')
+    bteditar.innerText='editar'
+    bteditar.addEventListener('click',function(){
+         ideditado=produto.id
+       nome.value=produto.nome
+       categoria.value=produto.categoria
+       preco.value=produto.preco
+       quantidade.value=produto.quantidade
+       const btnSubmit = document.querySelector('#formulario button[type="submit"]')
+    btnSubmit.innerText = 'Salvar Edição'
+    })
      li.innerHTML= `nome do produto: ${produto.nome}
         categoria do produto:${produto.categoria}
         preço do produto : ${valorconvertido}
         quantidade do produto: ${produto.quantidade}
 
     `
+    li.appendChild(bteditar)
+    li.appendChild(btnexcluir)
     listahtml.appendChild(li)
    })
    atualizarestatisticas()
@@ -98,6 +134,17 @@ envio_formulario.addEventListener('submit',function(){
     if(!validacaodoscampos()){
         return
     }
+    if (ideditado !== null) {
+   
+    const produto = listajs.find(p => p.id === ideditado)
+    produto.nome = nome.value
+    produto.categoria = categoria.value
+    produto.preco = precoconvertido
+    produto.quantidade = quantidadeconvertida
+    ideditado = null
+    const btnSubmit = document.querySelector('#formulario button[type="submit"]')
+    btnSubmit.innerText = 'Cadastrar'
+} else {
     const objetoestoque={
         id:idjs,
         nome:nome.value,
@@ -107,6 +154,9 @@ envio_formulario.addEventListener('submit',function(){
     }
     idjs++
     listajs.push(objetoestoque)
+    
+}   
     limparcampos()
     renderizarlista()
+    salvarnolocalstorage()
 })
