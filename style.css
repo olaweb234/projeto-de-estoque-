@@ -103,9 +103,6 @@ h2::after {
     margin: 0;
 }
 
-#formulario input[type="number"] {
-    -moz-appearance: textfield;
-}
 
 #formulario button {
     grid-column: span 2;
