@@ -7,13 +7,56 @@ const nome=document.getElementById('nome')
 const categoria=document.getElementById('categoria')
 const preco=document.getElementById('preco')
 const quantidade=document.getElementById('quantidade')
-
-
-
-
-
+const btnbuscar=document.getElementById('btn-buscar')
+const btnpreco=document.getElementById('ordenar-preco')
+const btnquantidade=document.getElementById('ordenar-quantidade')
+const btnome=document.getElementById('ordenar-nome')
 const listahtml=document.getElementById('listahtml')
 const alertas=document.getElementById('alertas')
+const limpar=document.getElementById('limpar')
+const mostrartudo=document.getElementById('mostrartudo')
+
+
+
+mostrartudo.addEventListener('click',function(){
+    renderizarlista()
+})
+
+limpar.addEventListener('click',function(){
+      if(confirm('tem certeza?')){
+        listajs=[]
+        idjs=1
+        salvarnolocalstorage()
+        renderizarlista()
+        limparcampos()
+        }
+})
+
+btnpreco.addEventListener('click',function(){
+    const ordenadopreco=[...listajs].sort((a,b)=>a.preco -b.preco)
+    renderizarlista(ordenadopreco)
+})
+btnome.addEventListener('click',function(){
+    const ordenarnome=[...listajs].sort((a,b)=>a.nome.localeCompare(b.nome))
+    renderizarlista(ordenarnome)
+})
+
+btnquantidade.addEventListener('click',function(){
+    const ordenarquantidade=[...listajs].sort((a,b)=>a.quantidade-b.quantidade)
+    renderizarlista(ordenarquantidade)
+})
+
+btnbuscar.addEventListener('click',function(){
+    const buscar=document.getElementById('buscar').value.trim().toLowerCase()
+
+
+    if(buscar===''){
+        alertas.innerHTML='Digite algo no campo buscar'
+        return
+    }
+    const resultados=listajs.filter(item=>item.nome.toLowerCase().includes(buscar)||item.categoria.toLowerCase().includes(buscar))
+    renderizarlista(resultados)
+})
 
 
 function salvarnolocalstorage(){
@@ -36,16 +79,27 @@ function atualizarestatisticas(){
     const receita=document.getElementById('total-receitas')
     const produtomaiscar=document.getElementById("produto_maiscaro")
     const produto_maisbarato=document.getElementById("produto_maisbarato")
-    const produto_menor=document.getElementById('produto_menor')
+    const produto_menor=document.getElementById('produto_menor')   
+    if (listajs.length === 0) {
+    quantidadegeral.innerText = 0
+    receita.innerText = 'R$ 0,00'
+    produtomaiscar.innerText = 'Nenhum produto'
+    produto_maisbarato.innerText = 'Nenhum produto'
+    produto_menor.innerText = 'Nenhum produto'
+  
+  
+  return
+}
 const total=listajs.reduce(function(soma,produto){
     return soma+ produto.quantidade
 },0)
     listajs.forEach(produto=>{
         receita2+=(produto.preco * produto.quantidade)
-    })
+    })   
     const receitaconvertida=receita2.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
     const produtos2=listajs.map(produto=>produto.preco)
     const produto_menor2=listajs.map(produto=>produto.quantidade)
+    
     const mairpreco= Math.max(...produtos2)
     const menorpreco=Math.min(...produtos2)
     receita.innerText=receitaconvertida
@@ -57,12 +111,16 @@ const total=listajs.reduce(function(soma,produto){
 
 
 
-function renderizarlista(){
+function renderizarlista(arraypararenderizar=listajs){
     listahtml.innerHTML=''
    
-   listajs.forEach(function(produto){
+   arraypararenderizar.forEach(function(produto){
     const valorconvertido=produto.preco.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
     const li=document.createElement('li')
+    if(produto.quantidade<5){
+        li.classList.add('estoque-baixo')
+        
+    }
     const btnexcluir=document.createElement('button')
     const idparaexcluir=produto.id
     btnexcluir.innerText='🗑️'
@@ -104,14 +162,16 @@ function validacaodoscampos(){
         alertas.innerHTML='Os campos devem ser preenchido'
         return false
     }
-
+   
     const precoconvertido=parseFloat(preco.value)
     const quantidadeconvertida=parseInt(quantidade.value)
     if(isNaN(precoconvertido)|| isNaN(quantidadeconvertida)|| precoconvertido<0 || quantidadeconvertida<0){
        alertas.innerHTML='Os campos devem ser preenchidos e tem que ser um valor valido'
         return false
       } 
-    const produtorepetido=listajs.some(produto=>produto.nome.toLowerCase()===nome.value.toLowerCase())
+    const produtorepetido = listajs.some(produto => 
+    produto.id !== ideditado && produto.nome.toLowerCase() === nome.value.toLowerCase()
+    )
     if(produtorepetido){
         alertas.innerText='Já existe esse produto'
         return false
